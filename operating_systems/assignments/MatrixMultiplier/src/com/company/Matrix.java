@@ -41,7 +41,7 @@ public class Matrix {
     }
 
     public Matrix randomFill(){
-        return randomFill(0, int.MAX_VALUE);
+        return randomFill(0, Integer.MAX_VALUE);
     }
 
     public Matrix randomFill(int max){
