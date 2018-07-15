@@ -1,18 +1,17 @@
 package com.company;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class FileSorter {
 
     private File file;
-    private DataOutputStream output;
-    private DataInputStream input;
+    private RandomAccessFile fileEditor;
 
     public FileSorter(File file) throws IOException{
         this.file = file;
         try {
-            output = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
-            input = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));
+            fileEditor = new RandomAccessFile(this.file, "rw");
         } catch(IOException e){
             System.out.println(e);
             throw e;
@@ -20,20 +19,48 @@ public class FileSorter {
     }
 
     public FileSorter sort() throws IOException{
+        /*
+            while not sorted
+                read a line
+                while there are still bytes to read
+                    read another line
+                    compare the lines
+                    if the lines are in the wrong order
+                        swap them
+                        trigger a boolean that it is not sorted
+                    make first line = second line
+         */
         boolean sorted = false;
         while(!sorted){
-            byte[] firstLine = new byte[32];
-            byte[] secondLine = new byte[32];
-            while( input.read(secondLine) != -1 ){
-                System.out.println(firstLine[0]);
-//                if(firstLine == ""){
-//                    firstLine = secondLine;
-//                    continue;
-//                }
-//                else{
-//
-//                }
+            sorted = true;
+            byte[] firstLine = new byte[36];
+            byte[] secondLine = new byte[36];
+            fileEditor.readFully(firstLine);
+
+            boolean endOfFile = false;
+            while(!endOfFile){
+                try{
+                    fileEditor.readFully(secondLine);
+                } catch( EOFException e ){
+                    endOfFile = true;
+                    continue;
+                }
+                catch (IOException e){
+                    System.out.println(e);
+                    throw e;
+                }
+
+                if(ByteConverter.bytesToInt(Arrays.copyOfRange(firstLine,0,4)) > ByteConverter.bytesToInt(Arrays.copyOfRange(secondLine,0,4))){
+                    fileEditor.seek(fileEditor.getFilePointer()-72);
+                    fileEditor.write(secondLine);
+                    fileEditor.write(firstLine);
+                    sorted = false;
+                }
+                else{
+                    firstLine = Arrays.copyOfRange(secondLine, 0, 36);
+                }
             }
+            fileEditor.seek(0);
         }
         return this;
     }

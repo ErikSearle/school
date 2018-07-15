@@ -1,24 +1,28 @@
 package com.company;
 
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
 public class Student {
 
-    private int studentNumber;
-    private char[] studentName;
+    private byte[] studentRecord;
 
-    public Student(int studentNumber, String studentName){
-        this.studentNumber = studentNumber;
-        this.studentName = StringModifier.to32BitCharArray(studentName);
+    public Student(int studentNumber, String studentName) {
+        studentRecord = new byte[36];
+
+        byte[] numBytes = ByteConverter.intTo4Bytes(studentNumber);
+        byte[] nameBytes = ByteConverter.stringTo32Bytes(studentName);
+        for(int i=0; i<4; i++){
+            studentRecord[i] = numBytes[i];
+        }
+        for(int i=0; i<32; i++){
+            studentRecord[i+4] = nameBytes[i];
+        }
+
     }
 
-    public int getStudentNumber() {
-        return studentNumber;
+    public byte[] getStudentRecord(){
+        return studentRecord;
     }
 
-    public char[] getStudentName() {
-        return studentName;
-    }
-
-    public String toString(){
-        return studentNumber + new String(studentName);
-    }
 }

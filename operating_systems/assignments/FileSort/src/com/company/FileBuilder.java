@@ -32,10 +32,9 @@ public class FileBuilder {
         return file;
     }
 
-    public FileBuilder writeLine(Object o) throws IOException {
+    public FileBuilder writeBytes(byte[] bytes) throws IOException {
         try {
-            writer.writeBytes(o.toString());
-            System.out.println(writer.size());
+            writer.write(bytes, 0, bytes.length);
         } catch(IOException e){
             System.out.println(e);
             throw e;

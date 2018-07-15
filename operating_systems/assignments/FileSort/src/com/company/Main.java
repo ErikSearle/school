@@ -21,12 +21,12 @@ public class Main {
 
         FileBuilder fb = new FileBuilder("student_record");
         for(int i=0; i<5; i++){
-            fb.writeLine(students.get(i));
+            fb.writeBytes(students.get(i).getStudentRecord());
         }
         fb.close();
 
-//        File file = fb.getFile();
-//
-//        file = new FileSorter(file).sort().getFile();
+        File file = fb.getFile();
+
+        file = new FileSorter(file).sort().getFile();
     }
 }
